@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>URL Shortener</title>
+</head>
+<body>
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-6 col-md-6" >
+				<div class="form-group">
+				  <label class="control-label" for="url">Long Url:</label>
+				  <input type="text" class="form-control" id="url">
+				</div>
+				<div class="form-group">
+				  <button type="button" class="btn btn-primary" id="shorten">Shorten</button>
+				</div>
+			    <div id="shortenOutput"></div>
+		</div>
+		<div class="col-sm-6 col-md-6" >
+				<div class="form-group">
+				  <label class="control-label" for="hash">Shorten Url/Hash:</label>
+				  <input type="text" class="form-control" id="hash">
+				</div>
+				<div class="form-group">
+				  <button type="button" class="btn btn-primary" id="lengthen">Lengthen</button>
+				</div>
+				<div id="leghtenOutput"></div>
+				
+		</div>
+	</div>
+</div>
+    <script>
+        $(document).ready(function () {
+            $("#shorten").click(function () {
+                $.ajax('/api/shorten', {
+                    'data': JSON.stringify({ originUrl: $("#url").val()}),
+                    'type': 'POST',
+                    'contentType': 'application/json', 
+                    success: function (data) {
+                        console.log(data);
+                        $('#shortenOutput').html("<a href='" + data.originUrl + "' target='_blank'>" + data.shortenUrl + "</a>");
+                    }
+                });                
+            });
+
+            $("#lengthen").click(function () {
+                $.ajax('/api/lengthen?hash=' + $("#hash").val(), {
+                    'type': 'GET',
+                    'contentType': 'application/json',
+                    success: function (data) {
+                        console.log(data);
+                        $('#leghtenOutput').html("<a href='" + data.originUrl + "' target='_blank'>" + data.originUrl + "</a>");
+                    }
+                });
+            });
+    });
+    </script>
+</body>
+</html>
